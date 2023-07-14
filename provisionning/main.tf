@@ -7,6 +7,10 @@ terraform {
     kubernetes = {
       source = "kubernetes"
     }
+    docker = {
+      source  = "kreuzwerker/docker"
+      version = "3.0.2"
+    }
   }
   backend "kubernetes" {
     secret_suffix = "automation"
@@ -19,6 +23,14 @@ data "terraform_remote_state" "name" {
   config = {
     secret_suffix = "automation"
     config_path   = "~/.kube/config"
+  }
+}
+
+provider "docker" {
+  host = "unix:///var/run/docker.sock"
+  registry_auth {
+    address     = "docker.io"
+    config_file = pathexpand("~/.docker/config.json")
   }
 }
 
